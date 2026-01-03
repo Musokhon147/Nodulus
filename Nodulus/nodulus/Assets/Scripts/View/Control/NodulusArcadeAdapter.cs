@@ -30,25 +30,23 @@ namespace View.Control
 
         private void Start()
         {
-            if (_boardAction == null) _boardAction = GetComponent<BoardAction>();
-            if (_puzzleState == null) _puzzleState = GetComponent<PuzzleState>();
-
-            // Find Luxodd services if they are not assigned
-            // This allows the adapter to work even if it's part of a spawned prefab
-            if (_puzzleState != null)
-            {
-                // We use a helper to try and find these in the scene if they aren't assigned
-                // because the Luxodd Network prefab is usually persistent (DontDestroyOnLoad)
-                FindLuxoddServices();
-            }
+            FindDependencies();
         }
 
-        private void FindLuxoddServices()
+        private void FindDependencies()
         {
-            // If the arcade adapter is on the same object as PuzzleState,
-            // we can just rely on PuzzleState having them or find them directly.
+            // First, check the current GameObject
             if (_boardAction == null) _boardAction = GetComponent<BoardAction>();
             if (_puzzleState == null) _puzzleState = GetComponent<PuzzleState>();
+
+            // If still missing, check parent or children (useful for different prefab structures)
+            if (_boardAction == null) _boardAction = GetComponentInParent<BoardAction>() ?? GetComponentInChildren<BoardAction>();
+            if (_puzzleState == null) _puzzleState = GetComponentInParent<PuzzleState>() ?? GetComponentInChildren<PuzzleState>();
+
+            if (_boardAction == null || _puzzleState == null)
+            {
+                Debug.LogWarning($"[NodulusArcadeAdapter] Some dependencies are missing! BoardAction: {_boardAction}, PuzzleState: {_puzzleState}");
+            }
         }
 
         private void Update()
