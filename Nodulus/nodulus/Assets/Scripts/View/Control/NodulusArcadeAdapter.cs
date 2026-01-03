@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Core.Data;
+using Luxodd.Game;
 using Luxodd.Game.Scripts.Network;
+using Luxodd.Game.Scripts.Input;
 using UnityEngine;
 using View.Game;
 using View.Items;
@@ -40,8 +42,8 @@ namespace View.Control
 
         private void HandleNavigation()
         {
-            var stick = ArcadeControls.GetStick();
-            var vector = stick.Vector;
+            ArcadeStick stick = ArcadeControls.GetStick();
+            Vector2 vector = stick.Vector;
 
             // Simple deadzone and centering logic
             if (vector.magnitude < _joystickDeadzone)
@@ -141,7 +143,7 @@ namespace View.Control
             if (ArcadeControls.GetButtonDown(ArcadeButtonColor.Black))
             {
                 // Determine direction for the move
-                var stick = ArcadeControls.GetStick();
+                ArcadeStick stick = ArcadeControls.GetStick();
                 Direction moveDir = GetDirectionFromVector(stick.Vector);
                 
                 if (moveDir != Direction.None)
@@ -158,7 +160,7 @@ namespace View.Control
             // Allow Red button to also trigger moves if joystick is held
             if (ArcadeControls.GetButtonDown(ArcadeButtonColor.Red))
             {
-                 var stick = ArcadeControls.GetStick();
+                 ArcadeStick stick = ArcadeControls.GetStick();
                  Direction moveDir = GetDirectionFromVector(stick.Vector);
                  if (moveDir != Direction.None)
                  {
