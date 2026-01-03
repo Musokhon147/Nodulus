@@ -123,6 +123,10 @@ namespace View.Game
             _boardInput = GetComponent<BoardInput>();
             _boardAction = GetComponent<BoardAction>();
             _gameAudio = GetComponent<GameBoardAudio>();
+
+            // Auto-discover Luxodd services if they are missing (for prefabs)
+            if (_webSocketCommandHandler == null) _webSocketCommandHandler = FindObjectOfType<WebSocketCommandHandler>();
+            if (_webSocketService == null) _webSocketService = FindObjectOfType<WebSocketService>();
         }
 
         private void Update()

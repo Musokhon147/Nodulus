@@ -32,6 +32,23 @@ namespace View.Control
         {
             if (_boardAction == null) _boardAction = GetComponent<BoardAction>();
             if (_puzzleState == null) _puzzleState = GetComponent<PuzzleState>();
+
+            // Find Luxodd services if they are not assigned
+            // This allows the adapter to work even if it's part of a spawned prefab
+            if (_puzzleState != null)
+            {
+                // We use a helper to try and find these in the scene if they aren't assigned
+                // because the Luxodd Network prefab is usually persistent (DontDestroyOnLoad)
+                FindLuxoddServices();
+            }
+        }
+
+        private void FindLuxoddServices()
+        {
+            // If the arcade adapter is on the same object as PuzzleState,
+            // we can just rely on PuzzleState having them or find them directly.
+            if (_boardAction == null) _boardAction = GetComponent<BoardAction>();
+            if (_puzzleState == null) _puzzleState = GetComponent<PuzzleState>();
         }
 
         private void Update()
