@@ -4,6 +4,7 @@ using Core.Data;
 using Luxodd.Game.Scripts.Network;
 using UnityEngine;
 using View.Game;
+using View.Items;
 
 namespace View.Control
 {
