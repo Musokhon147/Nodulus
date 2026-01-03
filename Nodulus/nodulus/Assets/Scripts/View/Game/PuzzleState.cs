@@ -7,6 +7,8 @@ using UnityEngine;
 using View.Control;
 using View.Data;
 using View.Items;
+using Luxodd.Game.Scripts.Network.CommandHandler;
+using Luxodd.Game.Scripts.Network;
 
 namespace View.Game
 {
@@ -24,6 +26,10 @@ namespace View.Game
         private BoardInput _boardInput;
         private BoardAction _boardAction;
         private GameBoardAudio _gameAudio;
+
+        [Header("Luxodd Integration")]
+        [SerializeField] private WebSocketCommandHandler _webSocketCommandHandler;
+        [SerializeField] private WebSocketService _webSocketService;
 
         private Puzzle _puzzle;
         private PlayerState _playerState;
@@ -170,6 +176,12 @@ namespace View.Game
             _boardAction.HighlightAll();
             
             LevelStateChanged?.Invoke(LevelState(), _puzzle.Win);
+
+            // Luxodd Analytics: Level Begin
+            if (_webSocketCommandHandler != null)
+            {
+                _webSocketCommandHandler.SendLevelBeginRequestCommand(level, null, null);
+            }
         }
 
         public void NextLevel(float delay = 0f)
@@ -204,6 +216,13 @@ namespace View.Game
                     .ToList();
                     
                 LevelStateChanged?.Invoke(LevelState(), _puzzle.Win);
+
+                if (_puzzle.Win && _webSocketCommandHandler != null)
+                {
+                    // For score, we use the number of moves (or a derived score)
+                    int score = (int)_puzzle.NumMoves;
+                    _webSocketCommandHandler.SendLevelEndRequestCommand(CurrentLevel, score, null, null);
+                }
 
                 return true;
             }
