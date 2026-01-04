@@ -190,8 +190,8 @@ namespace View.Control
                 
                 if (moveDir != Direction.None && _selectedNode != null)
                 {
-                    bool result = _boardAction.Play(_selectedNode, moveDir);
-                    Debug.Log($"[Adapter] Push/Pull Result: {result}");
+                    _boardAction.Play(_selectedNode, moveDir);
+                    Debug.Log($"[Adapter] Push/Pull attempted on {_selectedNode.Node.Position} towards {moveDir}");
                 }
                 else if (_selectedNode != null)
                 {
