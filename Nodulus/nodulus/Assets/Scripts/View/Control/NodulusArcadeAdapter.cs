@@ -118,6 +118,7 @@ namespace View.Control
 
             if (nextNode != null)
             {
+                if (_selectedNode != null) _selectedNode.Highlight(false);
                 _selectedNode = nextNode;
                 HighlightSelection();
             }
@@ -134,12 +135,12 @@ namespace View.Control
 
         private void HighlightSelection()
         {
-            // For now, we reuse the game's highlight system by "faking" a cursor or just pulsing it.
-            // But better to just use the game's existing highlight logic and add ours.
+            if (_selectedNode == null) return;
+            
             Debug.Log($"[Arcade] Selected Node at {_selectedNode.Node.Position}");
             
-            // Visual feedback: we can shake the node slightly
-            _selectedNode.gameObject.SendMessage("Pulse", SendMessageOptions.DontRequireReceiver);
+            // Visual feedback: Use the game's built-in highlight system
+            _selectedNode.Highlight(true);
         }
 
         private void HandleActions()

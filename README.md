@@ -16,6 +16,22 @@ This version of Nodulus is being integrated with the **Luxodd Arcade** platform,
 - **Arcade Controls**: Optimized for joystick and physical button inputs.
 - **Network Synchronization**: Automated session reporting and credit management via the Luxodd Unity Plugin.
 
+## Arcade Controls & Mapping
+
+The game is configured for a **1-Joystick (Player 1)** setup. The controls are bridged via the `NodulusArcadeAdapter.cs` script.
+
+### Joystick (Player 1)
+- **Node Selection**: Move the joystick **Up, Down, Left, or Right** to jump the selection highlight between cubes.
+- **Deadzone**: Pre-configured at `0.5f` to prevent accidental drifting.
+
+### Physical Buttons
+- **Black Button + Joystick**: Performs a **Pull or Push** action in the direction the joystick is being held.
+  - *Example*: Hold Joystick **Right** + Press **Black Button** = Push/Pull to the right.
+- **Red Button + Joystick**: Alternative action trigger (functions similarly to the Black Button for redundancy).
+- **Black Button alone**: General selection/tap (no directional action).
+
+---
+
 ## Getting Started
 
 1. Open the project in Unity (Version 6000.3.2f1 recommended).

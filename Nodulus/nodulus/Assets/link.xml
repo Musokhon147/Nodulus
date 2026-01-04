@@ -1,0 +1,15 @@
+<linker>
+  <!-- Preserve Luxodd SDK assemblies from being stripped -->
+  <assembly fullname="Luxodd.Game" preserve="all"/>
+  <assembly fullname="Luxodd.Game.Scripts" preserve="all"/>
+  <assembly fullname="Luxodd.Game.Example" preserve="all"/>
+
+  <!-- Preserve Newtonsoft.Json as it is used for network parsing -->
+  <assembly fullname="Newtonsoft.Json" preserve="all"/>
+
+  <!-- Preserve Core Nodulus logic -->
+  <assembly fullname="Assembly-CSharp" preserve="all"/>
+  
+  <assembly fullname="UnityEngine.UI" preserve="all"/>
+  <assembly fullname="UnityEngine.CoreModule" preserve="all"/>
+</linker>
