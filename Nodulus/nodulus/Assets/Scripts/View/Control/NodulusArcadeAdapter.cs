@@ -55,6 +55,12 @@ namespace View.Control
             
             HandleNavigation();
             HandleActions();
+
+            // Debug Input
+            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
+            {
+               Debug.Log("[Adapter] Direct Spacebar check: DOWN");
+            }
         }
 
         private bool CanProcessInput()

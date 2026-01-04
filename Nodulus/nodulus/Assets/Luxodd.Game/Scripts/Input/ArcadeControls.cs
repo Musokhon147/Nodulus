@@ -95,13 +95,25 @@ namespace Luxodd.Game
         // Legacy Input Manager implementation
 
 #if ENABLE_LEGACY_INPUT_MANAGER
-        private static bool GetButton_Legacy(ArcadeButtonColor buttonColor) =>
-            UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
-            UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
+        private static bool GetButton_Legacy(ArcadeButtonColor buttonColor)
+        {
+            // Debugging keyboard input
+            bool key = UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
+            if (key) return true;
+            
+            return UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyCode(buttonColor));
+        }
 
-        private static bool GetButtonDown_Legacy(ArcadeButtonColor buttonColor) =>
-            UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
-            UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
+        private static bool GetButtonDown_Legacy(ArcadeButtonColor buttonColor)
+        {
+            bool keyDown = UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
+            if (keyDown) 
+            {
+               Debug.Log($"[ArcadeControls] Keyboard Down detected for {buttonColor}");
+               return true;
+            }
+            return UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyCode(buttonColor));
+        }
 
         private static bool GetButtonUp_Legacy(ArcadeButtonColor buttonColor) =>
             UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
