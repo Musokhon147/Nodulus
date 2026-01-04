@@ -185,15 +185,19 @@ namespace View.Control
                 // Determine direction for the move
                 ArcadeStick stick = ArcadeControls.GetStick();
                 Direction moveDir = GetDirectionFromVector(stick.Vector);
+
+                Debug.Log($"[Adapter] Action Attempt: Stick={stick.Vector}, Dir={moveDir}, Node={(_selectedNode != null ? _selectedNode.Node.Position.ToString() : "null")}");
                 
-                if (moveDir != Direction.None)
+                if (moveDir != Direction.None && _selectedNode != null)
                 {
-                    _boardAction.Play(_selectedNode, moveDir);
+                    bool result = _boardAction.Play(_selectedNode, moveDir);
+                    Debug.Log($"[Adapter] Push/Pull Result: {result}");
                 }
-                else
+                else if (_selectedNode != null)
                 {
                     // If no stick held, maybe just "Tap" (which doesn't do much in Nodulus yet)
                     _boardAction.Play(_selectedNode);
+                    Debug.Log("[Adapter] Tap Action triggered (No Direction)");
                 }
             }
             
@@ -202,7 +206,7 @@ namespace View.Control
             {
                  ArcadeStick stick = ArcadeControls.GetStick();
                  Direction moveDir = GetDirectionFromVector(stick.Vector);
-                 if (moveDir != Direction.None)
+                 if (moveDir != Direction.None && _selectedNode != null)
                  {
                      _boardAction.Play(_selectedNode, moveDir);
                  }
