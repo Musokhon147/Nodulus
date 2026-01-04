@@ -127,6 +127,17 @@ namespace Luxodd.Game
             var xValue = SafeGetAxis_Legacy(xAxis);
             var yValue = SafeGetAxis_Legacy(yAxis);
 
+            // KEYBOARD FALLBACK FOR EDITOR
+            // If axes are zero, check raw arrow keys/WASD for testing
+            if (Mathf.Approximately(xValue, 0f) && Mathf.Approximately(yValue, 0f))
+            {
+                if (UnityEngine.Input.GetKey(KeyCode.RightArrow) || UnityEngine.Input.GetKey(KeyCode.D)) xValue = 1f;
+                else if (UnityEngine.Input.GetKey(KeyCode.LeftArrow) || UnityEngine.Input.GetKey(KeyCode.A)) xValue = -1f;
+
+                if (UnityEngine.Input.GetKey(KeyCode.UpArrow) || UnityEngine.Input.GetKey(KeyCode.W)) yValue = 1f;
+                else if (UnityEngine.Input.GetKey(KeyCode.DownArrow) || UnityEngine.Input.GetKey(KeyCode.S)) yValue = -1f;
+            }
+
             return new Vector2(xValue, yValue);
         }
 
