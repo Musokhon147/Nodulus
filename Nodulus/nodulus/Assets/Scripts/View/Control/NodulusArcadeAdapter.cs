@@ -51,8 +51,26 @@ namespace View.Control
 
         private void Update()
         {
+            if (!CanProcessInput()) return;
+            
             HandleNavigation();
             HandleActions();
+        }
+
+        private bool CanProcessInput()
+        {
+            if (_puzzleState == null || _boardAction == null) return false;
+            
+            // Check if the puzzle is initialized and nodes are available
+            // This prevents NullReferenceException during the loading phase
+            try
+            {
+                return _puzzleState.PlayerNodes != null && _puzzleState.NonPlayerNodes != null;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private void HandleNavigation()
