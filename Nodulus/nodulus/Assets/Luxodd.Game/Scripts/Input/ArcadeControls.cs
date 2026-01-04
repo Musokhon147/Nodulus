@@ -96,13 +96,16 @@ namespace Luxodd.Game
 
 #if ENABLE_LEGACY_INPUT_MANAGER
         private static bool GetButton_Legacy(ArcadeButtonColor buttonColor) =>
-            UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyCode(buttonColor));
+            UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
+            UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
 
         private static bool GetButtonDown_Legacy(ArcadeButtonColor buttonColor) =>
-            UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyCode(buttonColor));
+            UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
+            UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
 
         private static bool GetButtonUp_Legacy(ArcadeButtonColor buttonColor) =>
-            UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyCode(buttonColor));
+            UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
+            UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
 
         private static Vector2 GetStick_Legacy(ArcadeInputConfigAsset config)
         {

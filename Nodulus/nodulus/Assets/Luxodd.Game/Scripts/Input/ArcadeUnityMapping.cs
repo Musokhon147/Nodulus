@@ -18,9 +18,27 @@ namespace Luxodd.Game.Scripts.Input
                 { ArcadeButtonColor.White, KeyCode.JoystickButton9 },
             };
 
+        public static readonly IReadOnlyDictionary<ArcadeButtonColor, KeyCode> ButtonToKeyboardCode =
+            new Dictionary<ArcadeButtonColor, KeyCode>()
+            {
+                { ArcadeButtonColor.Black, KeyCode.Space },
+                { ArcadeButtonColor.Red, KeyCode.Z },
+                { ArcadeButtonColor.Green, KeyCode.X },
+                { ArcadeButtonColor.Yellow, KeyCode.C },
+                { ArcadeButtonColor.Blue, KeyCode.V },
+                { ArcadeButtonColor.Purple, KeyCode.B },
+                { ArcadeButtonColor.Orange, KeyCode.H },
+                { ArcadeButtonColor.White, KeyCode.Escape },
+            };
+
         public static KeyCode GetKeyCode(ArcadeButtonColor buttonColor)
         {
             return ButtonToKeyCode[buttonColor];
+        }
+
+        public static KeyCode GetKeyboardKeyCode(ArcadeButtonColor buttonColor)
+        {
+            return ButtonToKeyboardCode[buttonColor];
         }
     }
 }
