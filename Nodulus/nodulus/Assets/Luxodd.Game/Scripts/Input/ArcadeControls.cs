@@ -121,20 +121,35 @@ namespace Luxodd.Game
 #if ENABLE_LEGACY_INPUT_MANAGER
         private static bool GetButton_Legacy(ArcadeButtonColor buttonColor)
         {
-            return UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
-                   UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
+            if (UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor))) return true;
+
+            foreach (var code in ArcadeUnityMapping.GetKeyCodes(buttonColor))
+            {
+                if (UnityEngine.Input.GetKey(code)) return true;
+            }
+            return false;
         }
 
         private static bool GetButtonDown_Legacy(ArcadeButtonColor buttonColor)
         {
-            return UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
-                   UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
+            if (UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor))) return true;
+
+            foreach (var code in ArcadeUnityMapping.GetKeyCodes(buttonColor))
+            {
+                if (UnityEngine.Input.GetKeyDown(code)) return true;
+            }
+            return false;
         }
 
         private static bool GetButtonUp_Legacy(ArcadeButtonColor buttonColor)
         {
-            return UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
-                   UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
+            if (UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor))) return true;
+
+            foreach (var code in ArcadeUnityMapping.GetKeyCodes(buttonColor))
+            {
+                if (UnityEngine.Input.GetKeyUp(code)) return true;
+            }
+            return false;
         }
 #endif
 

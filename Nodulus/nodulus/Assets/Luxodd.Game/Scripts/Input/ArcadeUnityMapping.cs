@@ -5,17 +5,18 @@ namespace Luxodd.Game.Scripts.Input
 {
     public static class ArcadeUnityMapping
     {
-        public static readonly IReadOnlyDictionary<ArcadeButtonColor, KeyCode> ButtonToKeyCode =
-            new Dictionary<ArcadeButtonColor, KeyCode>()
+        public static readonly IReadOnlyDictionary<ArcadeButtonColor, KeyCode[]> ButtonToKeyCodes =
+            new Dictionary<ArcadeButtonColor, KeyCode[]>()
             {
-                { ArcadeButtonColor.Black, KeyCode.JoystickButton0 },
-                { ArcadeButtonColor.Red, KeyCode.JoystickButton1 },
-                { ArcadeButtonColor.Green, KeyCode.JoystickButton2 },
-                { ArcadeButtonColor.Yellow, KeyCode.JoystickButton3 },
-                { ArcadeButtonColor.Blue, KeyCode.JoystickButton4 },
-                { ArcadeButtonColor.Purple, KeyCode.JoystickButton5 },
-                { ArcadeButtonColor.Orange, KeyCode.JoystickButton8 },
-                { ArcadeButtonColor.White, KeyCode.JoystickButton9 },
+                // Many gamepads use 0 or 1 for the main confirm button (X on PS4 / A on Xbox)
+                { ArcadeButtonColor.Black, new[] { KeyCode.JoystickButton0, KeyCode.JoystickButton1 } },
+                { ArcadeButtonColor.Red, new[] { KeyCode.JoystickButton2, KeyCode.JoystickButton3 } },
+                { ArcadeButtonColor.Green, new[] { KeyCode.JoystickButton4 } },
+                { ArcadeButtonColor.Yellow, new[] { KeyCode.JoystickButton5 } },
+                { ArcadeButtonColor.Blue, new[] { KeyCode.JoystickButton6 } },
+                { ArcadeButtonColor.Purple, new[] { KeyCode.JoystickButton7 } },
+                { ArcadeButtonColor.Orange, new[] { KeyCode.JoystickButton8 } },
+                { ArcadeButtonColor.White, new[] { KeyCode.JoystickButton9 } },
             };
 
         public static readonly IReadOnlyDictionary<ArcadeButtonColor, KeyCode> ButtonToKeyboardCode =
@@ -31,9 +32,9 @@ namespace Luxodd.Game.Scripts.Input
                 { ArcadeButtonColor.White, KeyCode.Escape },
             };
 
-        public static KeyCode GetKeyCode(ArcadeButtonColor buttonColor)
+        public static KeyCode[] GetKeyCodes(ArcadeButtonColor buttonColor)
         {
-            return ButtonToKeyCode[buttonColor];
+            return ButtonToKeyCodes[buttonColor];
         }
 
         public static KeyCode GetKeyboardKeyCode(ArcadeButtonColor buttonColor)
