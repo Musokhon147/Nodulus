@@ -55,12 +55,6 @@ namespace View.Control
             
             HandleNavigation();
             HandleActions();
-
-            // Debug Input
-            if (UnityEngine.Input.GetKeyDown(KeyCode.Space))
-            {
-               Debug.Log("[Adapter] Direct Spacebar check: DOWN");
-            }
         }
 
         private bool CanProcessInput()
@@ -182,26 +176,19 @@ namespace View.Control
             
             if (ArcadeControls.GetButtonDown(ArcadeButtonColor.Black))
             {
-                // Determine direction for the move
                 ArcadeStick stick = ArcadeControls.GetStick();
                 Direction moveDir = GetDirectionFromVector(stick.Vector);
 
-                Debug.Log($"[Adapter] Action Attempt: Stick={stick.Vector}, Dir={moveDir}, Node={(_selectedNode != null ? _selectedNode.Node.Position.ToString() : "null")}");
-                
                 if (moveDir != Direction.None && _selectedNode != null)
                 {
                     _boardAction.Play(_selectedNode, moveDir);
-                    Debug.Log($"[Adapter] Push/Pull attempted on {_selectedNode.Node.Position} towards {moveDir}");
                 }
                 else if (_selectedNode != null)
                 {
-                    // If no stick held, maybe just "Tap" (which doesn't do much in Nodulus yet)
                     _boardAction.Play(_selectedNode);
-                    Debug.Log("[Adapter] Tap Action triggered (No Direction)");
                 }
             }
             
-            // Allow Red button to also trigger moves if joystick is held
             if (ArcadeControls.GetButtonDown(ArcadeButtonColor.Red))
             {
                  ArcadeStick stick = ArcadeControls.GetStick();

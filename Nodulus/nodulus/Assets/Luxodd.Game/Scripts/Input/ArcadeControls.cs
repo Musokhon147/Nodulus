@@ -67,22 +67,34 @@ namespace Luxodd.Game
             var invertX = config && config.InvertX;
             var invertY = config && config.InvertY;
 
-            Vector2 raw;
+            Vector2 raw = Vector2.zero;
 
+            // 1. Try Legacy GetAxisRaw first (Arcade cabinet standard)
+#if ENABLE_LEGACY_INPUT_MANAGER
+            var xAxisName = config ? config.HorizontalAxisName : "Horizontal";
+            var yAxisName = config ? config.VerticalAxisName : "Vertical";
+            
+            raw.x = SafeGetAxisRaw_Legacy(xAxisName);
+            raw.y = SafeGetAxisRaw_Legacy(yAxisName);
+
+            // KEYBOARD FALLBACK FOR EDITOR (if axes are zero)
+            if (Mathf.Approximately(raw.x, 0f) && Mathf.Approximately(raw.y, 0f))
+            {
+                if (UnityEngine.Input.GetKey(KeyCode.RightArrow) || UnityEngine.Input.GetKey(KeyCode.D)) raw.x = 1f;
+                else if (UnityEngine.Input.GetKey(KeyCode.LeftArrow) || UnityEngine.Input.GetKey(KeyCode.A)) raw.x = -1f;
+
+                if (UnityEngine.Input.GetKey(KeyCode.UpArrow) || UnityEngine.Input.GetKey(KeyCode.W)) raw.y = 1f;
+                else if (UnityEngine.Input.GetKey(KeyCode.DownArrow) || UnityEngine.Input.GetKey(KeyCode.S)) raw.y = -1f;
+            }
+#endif
+
+            // 2. If Legacy is still zero, try New Input System
 #if ENABLE_INPUT_SYSTEM
-            if (IsNewInputActive())
+            if (raw.sqrMagnitude < 0.001f && IsNewInputActive())
             {
                 raw = GetStick_New();
             }
-            else
 #endif
-            {
-#if ENABLE_LEGACY_INPUT_MANAGER
-                raw = GetStick_Legacy(config);
-#else
-                raw = Vector2.zero;
-#endif
-            }
 
             if (invertX) raw.x *= -1f;
             if (invertY) raw.y *= -1f;
@@ -91,66 +103,38 @@ namespace Luxodd.Game
             return new ArcadeStick(deadZoneVector.x, deadZoneVector.y);
         }
 
+        private static float SafeGetAxisRaw_Legacy(string axisName)
+        {
+            try
+            {
+                return UnityEngine.Input.GetAxisRaw(axisName);
+            }
+            catch
+            {
+                return 0f;
+            }
+        }
+
 
         // Legacy Input Manager implementation
 
 #if ENABLE_LEGACY_INPUT_MANAGER
         private static bool GetButton_Legacy(ArcadeButtonColor buttonColor)
         {
-            // Debugging keyboard input
-            bool key = UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
-            if (key) return true;
-            
-            return UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyCode(buttonColor));
+            return UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
+                   UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
         }
 
         private static bool GetButtonDown_Legacy(ArcadeButtonColor buttonColor)
         {
-            bool keyDown = UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
-            if (keyDown) 
-            {
-               Debug.Log($"[ArcadeControls] Keyboard Down detected for {buttonColor}");
-               return true;
-            }
-            return UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyCode(buttonColor));
+            return UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
+                   UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
         }
 
-        private static bool GetButtonUp_Legacy(ArcadeButtonColor buttonColor) =>
-            UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
-            UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
-
-        private static Vector2 GetStick_Legacy(ArcadeInputConfigAsset config)
+        private static bool GetButtonUp_Legacy(ArcadeButtonColor buttonColor)
         {
-            var xAxis = config ? config.HorizontalAxisName : "Horizontal";
-            var yAxis = config ? config.VerticalAxisName : "Vertical";
-
-            var xValue = SafeGetAxis_Legacy(xAxis);
-            var yValue = SafeGetAxis_Legacy(yAxis);
-
-            // KEYBOARD FALLBACK FOR EDITOR
-            // If axes are zero, check raw arrow keys/WASD for testing
-            if (Mathf.Approximately(xValue, 0f) && Mathf.Approximately(yValue, 0f))
-            {
-                if (UnityEngine.Input.GetKey(KeyCode.RightArrow) || UnityEngine.Input.GetKey(KeyCode.D)) xValue = 1f;
-                else if (UnityEngine.Input.GetKey(KeyCode.LeftArrow) || UnityEngine.Input.GetKey(KeyCode.A)) xValue = -1f;
-
-                if (UnityEngine.Input.GetKey(KeyCode.UpArrow) || UnityEngine.Input.GetKey(KeyCode.W)) yValue = 1f;
-                else if (UnityEngine.Input.GetKey(KeyCode.DownArrow) || UnityEngine.Input.GetKey(KeyCode.S)) yValue = -1f;
-            }
-
-            return new Vector2(xValue, yValue);
-        }
-
-        private static float SafeGetAxis_Legacy(string axisName)
-        {
-            try
-            {
-                return UnityEngine.Input.GetAxis(axisName);
-            }
-            catch
-            {
-                return 0f;
-            }
+            return UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
+                   UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
         }
 #endif
 
