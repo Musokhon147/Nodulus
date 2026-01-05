@@ -243,7 +243,7 @@ namespace Luxodd.Game.Scripts.Input.Editor
                     // KeyCode hint
                     if (_showUnityKeycodes)
                     {
-                        string kc = string.Join(", ", ArcadeUnityMapping.GetKeyCodes(button));
+                        string kc = ArcadeUnityMapping.GetKeyCode(button).ToString();
                         var kcRect = new Rect(r.x, r.y - 18, Mathf.Max(80, r.width), 18);
                         GUI.Label(kcRect, kc, SmallMutedStyle());
                     }
@@ -262,8 +262,8 @@ namespace Luxodd.Game.Scripts.Input.Editor
 
                 EditorGUILayout.Space(6);
 
-                EditorGUILayout.LabelField("Unity KeyCode(s)", EditorStyles.boldLabel);
-                EditorGUILayout.LabelField(string.Join(", ", ArcadeUnityMapping.GetKeyCodes(_selected)));
+                EditorGUILayout.LabelField("Unity KeyCode", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField(ArcadeUnityMapping.GetKeyCode(_selected).ToString());
 
                 EditorGUILayout.Space(12);
 
@@ -383,22 +383,15 @@ namespace Luxodd.Game.Scripts.Input.Editor
 
         private bool GetPressed(ArcadeButtonColor b)
         {
-            foreach (var code in ArcadeUnityMapping.GetKeyCodes(b))
-            {
-                if (UnityEngine.Input.GetKey(code)) return true;
-            }
-            return false;
+            return UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyCode(b));
         }
 
         private ArcadeButtonColor? DetectFirstDown()
         {
             foreach (ArcadeButtonColor b in Enum.GetValues(typeof(ArcadeButtonColor)))
             {
-                foreach (var code in ArcadeUnityMapping.GetKeyCodes(b))
-                {
-                    if (UnityEngine.Input.GetKeyDown(code))
-                        return b;
-                }
+                if (UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyCode(b)))
+                    return b;
             }
             return null;
         }

@@ -73,7 +73,7 @@ namespace Luxodd.Game
 
             var deadZone = config ? config.DeadZone : 0.15f;
             var invertX = config && config.InvertX;
-            var invertY = config && config.InvertY;
+            var invertY = config ? config.InvertY : true; // Default to true for arcade cabinets
 
             Vector2 raw = Vector2.zero;
 
@@ -131,35 +131,20 @@ namespace Luxodd.Game
 #if ENABLE_LEGACY_INPUT_MANAGER
         private static bool GetButton_Legacy(ArcadeButtonColor buttonColor)
         {
-            if (UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor))) return true;
-
-            foreach (var code in ArcadeUnityMapping.GetKeyCodes(buttonColor))
-            {
-                if (UnityEngine.Input.GetKey(code)) return true;
-            }
-            return false;
+            return UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
+                   UnityEngine.Input.GetKey(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
         }
 
         private static bool GetButtonDown_Legacy(ArcadeButtonColor buttonColor)
         {
-            if (UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor))) return true;
-
-            foreach (var code in ArcadeUnityMapping.GetKeyCodes(buttonColor))
-            {
-                if (UnityEngine.Input.GetKeyDown(code)) return true;
-            }
-            return false;
+            return UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
+                   UnityEngine.Input.GetKeyDown(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
         }
 
         private static bool GetButtonUp_Legacy(ArcadeButtonColor buttonColor)
         {
-            if (UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor))) return true;
-
-            foreach (var code in ArcadeUnityMapping.GetKeyCodes(buttonColor))
-            {
-                if (UnityEngine.Input.GetKeyUp(code)) return true;
-            }
-            return false;
+            return UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyCode(buttonColor)) || 
+                   UnityEngine.Input.GetKeyUp(ArcadeUnityMapping.GetKeyboardKeyCode(buttonColor));
         }
 #endif
 
