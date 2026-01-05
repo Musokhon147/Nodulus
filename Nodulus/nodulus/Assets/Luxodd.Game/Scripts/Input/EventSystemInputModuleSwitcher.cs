@@ -1,9 +1,11 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/*
 #if ENABLE_INPUT_SYSTEM
 using UnityEngine.InputSystem.UI;
 #endif
+*/
 
 namespace Luxodd.Game
 {
@@ -30,19 +32,12 @@ namespace Luxodd.Game
 
         private void EnsureCorrectModule()
         {
+            // Input System logic disabled to fix compilation errors
+            /*
 #if ENABLE_INPUT_SYSTEM
-            
-            var newModule = GetComponent<InputSystemUIInputModule>();
-            if (newModule == null)
-                newModule = gameObject.AddComponent<InputSystemUIInputModule>();
-
-           
-            var oldModule = GetComponent<StandaloneInputModule>();
-            if (oldModule != null)
-                DestroyImmediateSafe(oldModule);
-
+            ... (removed) ...
 #else
-          
+            */
             var oldModule = GetComponent<StandaloneInputModule>();
             if (oldModule == null)
                 oldModule = gameObject.AddComponent<StandaloneInputModule>();
@@ -51,7 +46,7 @@ namespace Luxodd.Game
             var newModule = GetComponent("InputSystemUIInputModule");
             if (newModule != null)
                 DestroyImmediateSafe((Component)newModule);
-#endif
+            // #endif
         }
 
         private static void DestroyImmediateSafe(Component c)
