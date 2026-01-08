@@ -73,7 +73,7 @@ namespace Luxodd.Game
 
             var deadZone = config ? config.DeadZone : 0.15f;
             var invertX = config && config.InvertX;
-            var invertY = config ? config.InvertY : true; // Default to true for arcade cabinets
+            var invertY = config && config.InvertY;  // Do NOT default to true
 
             Vector2 raw = Vector2.zero;
 
@@ -85,7 +85,8 @@ namespace Luxodd.Game
             raw.x = SafeGetAxisRaw_Legacy(xAxisName);
             raw.y = SafeGetAxisRaw_Legacy(yAxisName);
 
-            // KEYBOARD FALLBACK FOR EDITOR (if axes are zero)
+#if UNITY_EDITOR
+            // KEYBOARD FALLBACK FOR EDITOR TESTING ONLY (if axes are zero)
             if (Mathf.Approximately(raw.x, 0f) && Mathf.Approximately(raw.y, 0f))
             {
                 if (UnityEngine.Input.GetKey(KeyCode.RightArrow) || UnityEngine.Input.GetKey(KeyCode.D)) raw.x = 1f;
@@ -94,6 +95,7 @@ namespace Luxodd.Game
                 if (UnityEngine.Input.GetKey(KeyCode.UpArrow) || UnityEngine.Input.GetKey(KeyCode.W)) raw.y = 1f;
                 else if (UnityEngine.Input.GetKey(KeyCode.DownArrow) || UnityEngine.Input.GetKey(KeyCode.S)) raw.y = -1f;
             }
+#endif
 #endif
 
             // 2. If Legacy is still zero, try New Input System

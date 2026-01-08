@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Core.Data;
@@ -12,17 +13,22 @@ namespace View.Control
 {
     /// <summary>
     /// Adapts physical arcade controls to Nodulus gameplay.
-    /// Handles node navigation with joystick and actions with buttons.
+    /// Follows Luxodd documentation pattern: reads ArcadeControls and exposes game actions.
     /// </summary>
-    public class NodulusArcadeAdapter : MonoBehaviour
+    public class NodulusArcadeAdapter : MonoBehaviour, INodulusInputAdapter
     {
         [Header("References")]
         [SerializeField] private BoardAction _boardAction;
         [SerializeField] private PuzzleState _puzzleState;
         
         [Header("Settings")]
-        [SerializeField] private float _joystickDeadzone = 0.5f;
         [SerializeField] private float _joystickRepeatDelay = 0.3f;
+
+        // Interface implementation
+        public Direction NavigationDirection { get; private set; }
+        public bool IsNavigationCentered { get; private set; }
+        public event Action ActionButtonPressed;
+        public event Action<Direction> DirectionalActionPressed;
 
         private NodeView _selectedNode;
         private float _lastMoveTime;
@@ -78,13 +84,18 @@ namespace View.Control
             ArcadeStick stick = ArcadeControls.GetStick();
             Vector2 vector = stick.Vector;
 
-            // Simple deadzone and centering logic
-            if (vector.magnitude < _joystickDeadzone)
+            // Check if joystick is centered (ArcadeControls.GetStick() already applies deadzone)
+            if (stick.IsCentered())
             {
                 _joystickCentered = true;
+                IsNavigationCentered = true;
+                NavigationDirection = Direction.None;
                 return;
             }
 
+            IsNavigationCentered = false;
+
+            // Repeat delay - prevent cursor from moving too fast when holding direction
             if (!_joystickCentered && Time.time - _lastMoveTime < _joystickRepeatDelay)
             {
                 return;
@@ -100,6 +111,8 @@ namespace View.Control
             {
                 dir = vector.y > 0 ? Direction.Up : Direction.Down;
             }
+
+            NavigationDirection = dir;
 
             if (dir != Direction.None)
             {
@@ -163,16 +176,9 @@ namespace View.Control
 
         private void HandleActions()
         {
-            if (_selectedNode == null) return;
-
-            // Black Button: Rotate/Pull/Push in a specific direction? 
-            // In the original game, swipe direction determines action.
-            // For Arcade, we can use the Joystick direction HELD when pressing a button, 
-            // or just use specific buttons for specific directions.
-            
-            // Suggestion: 
-            // Black Button + Joystick = Action in that direction.
-            // Red Button = Undo/Cancel.
+            // Black Button: Primary action
+            // If joystick is held, perform directional action (push/pull)
+            // If joystick is centered, perform simple action (select/rotate)
             
             if (ArcadeControls.GetButtonDown(ArcadeButtonColor.Black))
             {
@@ -181,20 +187,24 @@ namespace View.Control
 
                 if (moveDir != Direction.None && _selectedNode != null)
                 {
+                    DirectionalActionPressed?.Invoke(moveDir);
                     _boardAction.Play(_selectedNode, moveDir);
                 }
                 else if (_selectedNode != null)
                 {
+                    ActionButtonPressed?.Invoke();
                     _boardAction.Play(_selectedNode);
                 }
             }
             
+            // Red Button: Also triggers directional action (alternative button)
             if (ArcadeControls.GetButtonDown(ArcadeButtonColor.Red))
             {
                  ArcadeStick stick = ArcadeControls.GetStick();
                  Direction moveDir = GetDirectionFromVector(stick.Vector);
                  if (moveDir != Direction.None && _selectedNode != null)
                  {
+                     DirectionalActionPressed?.Invoke(moveDir);
                      _boardAction.Play(_selectedNode, moveDir);
                  }
             }
